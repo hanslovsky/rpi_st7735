@@ -43,7 +43,6 @@ class RGBLayoutInterpreter {
     if (info.buflen != stepsize*(end-begin)) {
       return (INCONSISTENCY_ERROR);
     }
-    int count = 0;
     for (; begin != end; ++begin, buffer += stepsize) {
       *(int16_t*)(buffer) =
           (int)(*begin)[0] << shifts[0] |
@@ -66,12 +65,11 @@ class FlatLayoutInterpreter {
     if (info.buflen != stepsize*(end-begin)) {
       return (INCONSISTENCY_ERROR);
     }
-    int count = 0;
     for (; begin != end; begin += 3, buffer += stepsize) {
       *(int16_t*)(buffer) =
-          (int)(*begin)[0] << shifts[0] |
-          (int)(*begin)[1] << shifts[1] |
-          (int)(*begin)[2] << shifts[2]
+          (int)(*begin+0) << shifts[0] |
+          (int)(*begin+1) << shifts[1] |
+          (int)(*begin+2) << shifts[2]
           ;
     }
     return SUCCESS;
