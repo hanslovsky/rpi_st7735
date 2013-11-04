@@ -6,6 +6,7 @@
 
 #include <vigra/numpy_array.hxx>
 #include <vigra/multi_shape.hxx>
+#include <vigra/numpy_array_converters.hxx>
 
 #include "vigra_interface/vigra.hxx"
 
@@ -34,7 +35,7 @@ void export_vigra_interface() {
       ;
 
   def("drawFromFile", &py_draw_from_file);
-  def("drawMultiArray", &py_draw_multi_array);
+  def("drawMultiArray", vigra::registerConverters(&py_draw_multi_array));
 }
   
 
