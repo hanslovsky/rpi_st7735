@@ -1,0 +1,45 @@
+CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
+PROJECT(rpi_st7735)
+
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_extensions/)
+FIND_PACKAGE(VIGRA REQUIRED)
+if (VIGRA_FOUND)
+    MESSAGE("--   > vigra found!")
+    INCLUDE_DIRECTORIES(${VIGRA_INCLUDE_DIR})
+    LINK_DIRECTORIES( ${VIGRA_IMPEX_LIBRARY_DIR})
+endif()
+
+SET(CMAKE_CXX_FLAGS "-Wall -Wextra -Wfatal-errors -std=c++0x -pedantic -pthread")
+SET(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
+SET(CMAKE_CXX_FLAGS_RELEASE "-O3 -Werror")	
+
+
+
+INCLUDE_DIRECTORIES("${PROJECT_SOURCE_DIR}/include/")
+
+FILE(GLOB LIB_VIGRA "src/vigra_interface/*.cxx")
+# FILE(GLOB LIB_DRAWER "src/pixel_drawer/*.cxx")
+ADD_LIBRARY(vigra_interface SHARED ${LIB_VIGRA})
+# ADD_LIBRARY(pixel_drawer SHARED ${LIB_DRAWER})
+ADD_EXECUTABLE(vigra_example examples/vigra.cxx)
+ADD_EXECUTABLE(random_example examples/random.cxx)
+
+TARGET_LINK_LIBRARIES(vigra_interface ${VIGRA_IMPEX_LIBRARY})
+TARGET_LINK_LIBRARIES(vigra_example vigra_interface)
+TARGET_LINK_LIBRARIES(random_example vigra_interface)
+
+
+
+INSTALL(TARGETS vigra_interface LIBRARY DESTINATION lib)
+# INSTALL(TARGETS pixel_drawer LIBRARY DESTINATION lib)
+
+
+
+FIND_PACKAGE(Boost REQUIRED COMPONENTS python)
+FIND_PACKAGE(PythonLibs REQUIRED) #  PATHS "/usr/lib/libpython2.7.so")
+FIND_PACKAGE(PythonInterp REQUIRED) #  PATHS "/usr/bin/python2")
+FILE(GLOB PYTHON_MODULE "python/*.cxx")
+ADD_LIBRARY(pi_st7735 SHARED ${PYTHON_MODULE})
+SET_TARGET_PROPERTIES(pi_st7735 PROPERTIES PREFIX "" OUTPUT_NAME pi_st7735 SUFFIX ".so")
+TARGET_LINK_LIBRARIES(pi_st7735 vigra_interface ${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
+INCLUDE_DIRECTORIES("${PYTHON_INCLUDE_DIRS}")
