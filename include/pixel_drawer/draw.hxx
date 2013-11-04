@@ -60,12 +60,14 @@ class FlatLayoutInterpreter {
   template <typename Iterator>
   EXIT_FLAG write_sequence(char* buffer, Iterator begin, Iterator end, const BufferInfo& info) {
     size_t stepsize = info.var_info.bits_per_pixel/8;
+    size_t channels = 3;
     std::cout << info.buflen << std::endl;
     std::cout << end-begin << std::endl;
-    if (info.buflen != stepsize*(end-begin)) {
+    std::cout << info.buflen << ',' << channels*1.0/stepsize*(end-begin) << std::endl;
+    if (channels*1.0/stepsize*info.buflen != 1.0*(end-begin)) {
       return (INCONSISTENCY_ERROR);
     }
-    for (; begin != end; begin += 3, buffer += stepsize) {
+    for (; begin != end; begin += channels, buffer += stepsize) {
       *(int16_t*)(buffer) =
           (int)(*begin+0) << shifts[0] |
           (int)(*begin+1) << shifts[1] |
