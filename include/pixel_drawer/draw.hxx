@@ -96,6 +96,7 @@ EXIT_FLAG write_sequence(const std::string& filename, Iterator begin, Iterator e
                             file_descriptor,
                             0);
       flag = interpreter.write_sequence(buffer, begin, end, info);
+      munmap(buffer, info.buflen);
     } else {
       flag = IOCTL_ERROR;
     }

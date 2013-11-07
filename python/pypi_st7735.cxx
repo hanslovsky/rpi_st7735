@@ -22,7 +22,7 @@ EXIT_FLAG py_draw_from_file(const std::string& filename, const std::string& devi
   
 
 EXIT_FLAG py_draw_multi_array(vigra::NumpyArray<3, unsigned char> image, const std::string& device_name) {
-  return draw_multi_array(image, device_name);
+  return draw_multi_array(vigra::MultiArrayView<3,unsigned char>(image), device_name);
 }
 
 
