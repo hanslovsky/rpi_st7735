@@ -9,7 +9,7 @@ if (VIGRA_FOUND)
     LINK_DIRECTORIES( ${VIGRA_IMPEX_LIBRARY_DIR})
 endif()
 
-SET(CMAKE_CXX_FLAGS "-Wall -Wextra -Wfatal-errors -std=c++0x -pedantic -pthread")
+SET(CMAKE_CXX_FLAGS "-Wall -Wextra -Wfatal-errors -std=c++11 -pedantic -pthread")
 SET(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
 SET(CMAKE_CXX_FLAGS_RELEASE "-O3 -Werror")	
 
@@ -28,10 +28,16 @@ TARGET_LINK_LIBRARIES(vigra_interface ${VIGRA_IMPEX_LIBRARY})
 TARGET_LINK_LIBRARIES(vigra_example vigra_interface)
 TARGET_LINK_LIBRARIES(random_example vigra_interface)
 
+FILE(GLOB LIB "src/*.cxx")
+ADD_LIBRARY(framebuffer SHARED ${LIB})
+INSTALL(TARGETS framebuffer LIBRARY DESTINATION lib)
+INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/include/framebuffer DESTINATION include) 
 
 
 INSTALL(TARGETS vigra_interface LIBRARY DESTINATION lib)
+INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/include/vigra_interface DESTINATION include)
 # INSTALL(TARGETS pixel_drawer LIBRARY DESTINATION lib)
+INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/include/pixel_drawer DESTINATION include)
 
 
 
