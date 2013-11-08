@@ -38,12 +38,9 @@ class RGBLayoutInterpreter {
   template <typename Iterator>
   EXIT_FLAG write_sequence(char* buffer, Iterator begin, Iterator end, const BufferInfo& info) {
     size_t stepsize = info.var_info.bits_per_pixel/8;
-    std::cout << info.buflen << std::endl;
-    std::cout << end-begin << std::endl;
     if (info.buflen != stepsize*(end-begin)) {
       return (INCONSISTENCY_ERROR);
     }
-    int count = 0;
     for (; begin != end; ++begin, buffer += stepsize) {
       *(int16_t*)(buffer) =
           (int)(*begin)[0] << shifts[0] |
@@ -61,17 +58,17 @@ class FlatLayoutInterpreter {
   template <typename Iterator>
   EXIT_FLAG write_sequence(char* buffer, Iterator begin, Iterator end, const BufferInfo& info) {
     size_t stepsize = info.var_info.bits_per_pixel/8;
-    std::cout << info.buflen << std::endl;
-    std::cout << end-begin << std::endl;
-    if (info.buflen != stepsize*(end-begin)) {
+    size_t channels = 3;
+    if (channels*1.0/stepsize*info.buflen != 1.0*(end-begin)) {
       return (INCONSISTENCY_ERROR);
     }
-    int count = 0;
+    int sum = 0;
     for (; begin != end; begin += 3, buffer += stepsize) {
+      // for some reason, r and b are swapped in this case
       *(int16_t*)(buffer) =
-          (int)(*begin)[0] << shifts[0] |
-          (int)(*begin)[1] << shifts[1] |
-          (int)(*begin)[2] << shifts[2]
+          ((int)(begin[2])) << shifts[0] |
+          ((int)(begin[1])) << shifts[1] |
+          ((int)(begin[0])) << shifts[2]
           ;
     }
     return SUCCESS;
@@ -99,6 +96,7 @@ EXIT_FLAG write_sequence(const std::string& filename, Iterator begin, Iterator e
                             file_descriptor,
                             0);
       flag = interpreter.write_sequence(buffer, begin, end, info);
+      munmap(buffer, info.buflen);
     } else {
       flag = IOCTL_ERROR;
     }
