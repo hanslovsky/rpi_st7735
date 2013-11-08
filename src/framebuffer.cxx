@@ -36,7 +36,7 @@ Framebuffer::Framebuffer(const std::string& device) :
         !ioctl(info_.file_descriptor, FBIOGET_FSCREENINFO, &fix_info)) {
       info_.buffer_length = var_info.yres_virtual * fix_info.line_length;
       info_.bits_per_pixel = var_info.bits_per_pixel;
-      info_.bytes_per_pixel = info_.bits_per_pixel/2;
+      info_.bytes_per_pixel = info_.bits_per_pixel/8;
       info_.width = var_info.xres;
       info_.height = var_info.yres;
       std::cout << "length=" << info_.buffer_length << ", bytes_per_pixel=" << info_.bytes_per_pixel
