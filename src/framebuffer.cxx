@@ -39,8 +39,14 @@ Framebuffer::Framebuffer(const std::string& device) :
       info_.bytes_per_pixel = info_.bits_per_pixel/8;
       info_.width = var_info.xres;
       info_.height = var_info.yres;
+      info_.line_length = fix_info.line_length;
+      info_.offset_x = var_info.xoffset;
+      info_.offset_y = var_info.yoffset;
       std::cout << "length=" << info_.buffer_length << ", bytes_per_pixel=" << info_.bytes_per_pixel
-                << ", width=" << info_.width << ",height=" << info_.height << std::endl;
+                << ", width=" << info_.width << ",height=" << info_.height
+                << ", line_length=" << info_.line_length 
+                << ", xoffset=" << info_.offset_x << ", yoffset=" << info_.offset_y
+                << std::endl;
       buffer_ = (char*) mmap(NULL,
                              info_.buffer_length,
                              PROT_WRITE,
@@ -55,8 +61,10 @@ Framebuffer::Framebuffer(const std::string& device) :
   }
   if (info_.bytes_per_pixel == 4) {
     setter_ = std::unique_ptr<PixelSetter>(new PixelSetter_32bit);
+    info_.number_of_channels = 4; // GET INFO FROM ioctl?
   } else if (info_.bytes_per_pixel == 2) {
-    setter_ = std::unique_ptr<PixelSetter>(new PixelSetter_8bit);
+    setter_ = std::unique_ptr<PixelSetter>(new PixelSetter_16bit);
+    info_.number_of_channels = 3; // GET INFO FROM ioctl?
   } else {
     // throw NOT IMPLEMENTED ERROR
   }

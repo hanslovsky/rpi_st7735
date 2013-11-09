@@ -13,7 +13,7 @@ class PixelSetter_32bit : public PixelSetter {
   virtual int draw(char* buffer, char* src);
 };
 
-class PixelSetter_8bit : public PixelSetter {
+class PixelSetter_16bit : public PixelSetter {
  public:
   enum {RED_SHIFT = 5, GREEN_SHIFT = 6, BLUE_SHIFT = 5};
   virtual int draw(char* buffer, char* src);
