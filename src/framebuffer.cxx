@@ -42,11 +42,6 @@ Framebuffer::Framebuffer(const std::string& device) :
       info_.line_length = fix_info.line_length;
       info_.offset_x = var_info.xoffset;
       info_.offset_y = var_info.yoffset;
-      std::cout << "length=" << info_.buffer_length << ", bytes_per_pixel=" << info_.bytes_per_pixel
-                << ", width=" << info_.width << ",height=" << info_.height
-                << ", line_length=" << info_.line_length 
-                << ", xoffset=" << info_.offset_x << ", yoffset=" << info_.offset_y
-                << std::endl;
       buffer_ = (char*) mmap(NULL,
                              info_.buffer_length,
                              PROT_WRITE,
@@ -78,7 +73,11 @@ Framebuffer::~Framebuffer() {
   if (info_.file_descriptor >= 0) {
     close(info_.file_descriptor);
   }
-  std::cout << "DESTRUCTION ALL AROUND ME" << std::endl;
+}
+
+
+const Framebuffer::Info& Framebuffer::info() const {
+  return info_;
 }
 
 } // namespace framebuffer

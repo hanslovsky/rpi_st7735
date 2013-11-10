@@ -10,10 +10,10 @@
 #include "framebuffer/pixelsetter.hxx"
 
 namespace framebuffer {
+enum class ReturnStatus {SUCCESS=0, INCONSISTENCY_ERROR, OUT_OF_RANGE};
 
 class Framebuffer {
  public:
-  enum class ReturnStatus {SUCCESS=0, INCONSISTENCY_ERROR, OUT_OF_RANGE};
   struct Info {
     size_t buffer_length;
     int file_descriptor;
@@ -37,6 +37,7 @@ class Framebuffer {
                               size_t top_left_y,
                               size_t width,
                               size_t height);
+  const Info& info() const;
                      
  private:
   char* buffer_;
@@ -45,14 +46,12 @@ class Framebuffer {
 };
 
 template <typename Iterator>
-Framebuffer::ReturnStatus Framebuffer::draw_rectangle(Iterator begin,
-                                                      Iterator end,
-                                                      size_t top_left_x,
-                                                      size_t top_left_y,
-                                                      size_t width,
-                                                      size_t height) {
-  std::cout << info_.number_of_channels << std::endl;
-  std::cout << info_.bytes_per_pixel << std::endl;
+ReturnStatus Framebuffer::draw_rectangle(Iterator begin,
+                                         Iterator end,
+                                         size_t top_left_x,
+                                         size_t top_left_y,
+                                         size_t width,
+                                         size_t height) {
   if (top_left_x + width > info_.width ||
       top_left_y + height > info_.height) {
     return ReturnStatus::OUT_OF_RANGE;
@@ -63,14 +62,11 @@ Framebuffer::ReturnStatus Framebuffer::draw_rectangle(Iterator begin,
         + (top_left_x + info_.offset_x)*info_.bytes_per_pixel
         ;
     for (size_t x = 0; x < width; ++x) {
-      buffer += info_.bytes_per_pixel;
-      // std::cout << buffer - buffer_ << ',';
       setter_->draw(buffer, reinterpret_cast<char*>(begin));
+      buffer += info_.bytes_per_pixel;
       begin += info_.number_of_channels;
     }
-    // std::cout << "\b \n";
   }
-  std::cout << "      " << end - begin << std::endl;
   return ReturnStatus::SUCCESS;
 }
 
