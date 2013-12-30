@@ -25,7 +25,7 @@ int main(int argc, char** argv) {
       }
       image3(0, x, y) = 0;
       image3(1, x, y) = 0;
-      image3(1, x, y) = 0;
+      image3(2, x, y) = 0;
           
       image3(color_index, x, y) = (unsigned char)255;
       sum += 255;

@@ -62,7 +62,7 @@ ReturnStatus Framebuffer::draw_rectangle(Iterator begin,
         + (top_left_x + info_.offset_x)*info_.bytes_per_pixel
         ;
     for (size_t x = 0; x < width; ++x) {
-      setter_->draw(buffer, reinterpret_cast<char*>(begin));
+      setter_->draw(buffer, reinterpret_cast<unsigned char*>(begin));
       buffer += info_.bytes_per_pixel;
       begin += info_.number_of_channels;
     }

@@ -1,4 +1,4 @@
-// stdl
+// stl
 #include <string>
 
 // vigra
